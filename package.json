@@ -4,7 +4,7 @@
   "description": "Backend API for soma tracking app",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch server.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node src/dist/server.js"
   },
