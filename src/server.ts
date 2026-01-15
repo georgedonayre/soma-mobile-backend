@@ -217,7 +217,7 @@ app.get("/api/search-foods", async (req: Request, res: Response) => {
     console.log("USDA SEARCH BACKEND API IS WORKING!");
     const { query, pageSize = "10", pageNumber = "1" } = req.query;
 
-    if (!query || typeof query !== "string") {
+    if (!query || typeof query !== "string" || !query.trim()) {
       return res.status(400).json({
         error: "Invalid request. query parameter is required.",
       });
@@ -237,9 +237,18 @@ app.get("/api/search-foods", async (req: Request, res: Response) => {
       });
     }
 
-    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${USDA_API_KEY}&query=${encodeURIComponent(
-      query
-    )}&pageSize=${pageSizeNum}&pageNumber=${pageNumberNum}&dataType=Foundation,Survey (FNDDS)`;
+    // ✅ Build the URL safely using URLSearchParams
+    const params = new URLSearchParams({
+      api_key: USDA_API_KEY!,
+      query: query,
+      pageSize: pageSizeNum.toString(),
+      pageNumber: pageNumberNum.toString(),
+      dataType: "Foundation,Survey (FNDDS)",
+    });
+
+    const url = `https://api.nal.usda.gov/fdc/v1/foods/search?${params.toString()}`;
+
+    console.log("USDA URL:", url); // optional debug log
 
     const response = await fetch(url);
 
