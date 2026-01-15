@@ -237,20 +237,19 @@ app.get("/api/search-foods", async (req: Request, res: Response) => {
       });
     }
 
-    // ✅ Build the URL safely using URLSearchParams
-    const params = new URLSearchParams({
-      api_key: USDA_API_KEY!,
-      query: query,
-      pageSize: pageSizeNum.toString(),
-      pageNumber: pageNumberNum.toString(),
-      dataType: "Foundation,Survey (FNDDS)",
-    });
+    const params = new URLSearchParams();
+
+    params.append("api_key", USDA_API_KEY!);
+    params.append("query", query);
+    params.append("pageSize", pageSizeNum.toString());
+    params.append("pageNumber", pageNumberNum.toString());
+    params.append("dataType", "Foundation");
+    params.append("dataType", "Survey (FNDDS)");
 
     const url = `https://api.nal.usda.gov/fdc/v1/foods/search?${params.toString()}`;
 
-    console.log("USDA URL:", url); // optional debug log
-
     const response = await fetch(url);
+    console.log("USDA URL:", url); // optional debug log
 
     if (!response.ok) {
       throw new Error(`USDA API Error: ${response.status}`);
